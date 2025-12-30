@@ -56,7 +56,7 @@ void update(struct Graphics* g)
 // the switch resolution is 1280x720, but the "pixels" used by this grid are 426x240
 void putAPixel(struct Graphics* gr, int x, int y, int r, int g, int b)
 {
-	int num = (r << 24) | (g << 16) | (b << 8) | 0;
+	// int num = (r << 24) | (g << 16) | (b << 8) | 0; //不要なのだ
 	x *= 2;
 	y *= 2;
 
@@ -65,13 +65,14 @@ void putAPixel(struct Graphics* gr, int x, int y, int r, int g, int b)
 		for (ay=0; ay<2; ay++)
 			for (az=0; az<2; az++)
 			{
-				SDL_Rect rect;
+                // 長方形の描画(3×3ピクセル)
+				SDL_Rect rect; 
 				rect.x = x*1.5;
 				rect.y = y*1.5;
 				rect.w = 3;
 				rect.h = 3;
 
-				SDL_FillRect(gr->window_surface, &rect, SDL_MapRGBA(gr->window_surface->format, b, g, r, 0xFF));
+				SDL_FillRect(gr->window_surface, &rect, SDL_MapRGBA(gr->window_surface->format, r, g, b, 0xFF));
 			}
 }
 
