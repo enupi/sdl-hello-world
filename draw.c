@@ -57,8 +57,9 @@ void update(struct Graphics* g)
 void putAPixel(struct Graphics* gr, int x, int y, int r, int g, int b)
 {
 	// int num = (r << 24) | (g << 16) | (b << 8) | 0; //不要なのだ
-	x *= 2;
-	y *= 2;
+    int chara_size = 5; // 1文字あたりのドット数(5×5)
+	//x *= 2; // 削除予定
+	//y *= 2; // なのだ
 
 	int ax, ay, az;
 	for (ax=0; ax<2; ax++)
@@ -67,10 +68,10 @@ void putAPixel(struct Graphics* gr, int x, int y, int r, int g, int b)
 			{
                 // 長方形の描画(3×3ピクセル)
 				SDL_Rect rect; 
-				rect.x = x*1.5;
-				rect.y = y*1.5;
-				rect.w = 3;
-				rect.h = 3;
+				rect.x = x*chara_size;
+				rect.y = y*chara_size;
+				rect.w = chara_size;
+				rect.h = chara_size;
 
 				SDL_FillRect(gr->window_surface, &rect, SDL_MapRGBA(gr->window_surface->format, r, g, b, 0xFF));
 			}
@@ -113,6 +114,63 @@ void drawColorString(struct Graphics* gr, int xi, int yi, char* string, int r, i
 	}
 
 	update(gr);
+}
+
+void HSVtoRGB(float hsv[3]){
+
+    int i;
+    float f, p, q, t;
+    float h = hsv[0];
+    float s = hsv[1];
+    float v = hsv[2];
+
+    if( s == 0 ) {
+        // Achromatic (grey)
+        hsv[0] = (int)(v * 255);
+        hsv[1] = (int)(v * 255);
+        hsv[2] = (int)(v * 255);
+        return;
+    }
+
+    h /= 60;            // sector 0 to 5
+    i = (int)h;
+    f = h - i;          // factorial part of h
+    p = v * (1 - s);
+    q = v * (1 - s * f);
+    t = v * (1 - s * (1 - f));
+
+    switch( i ) {
+        case 0:
+            hsv[0] = (int)(v * 255);
+            hsv[1] = (int)(t * 255);
+            hsv[2] = (int)(p * 255);
+            break;
+        case 1:
+            hsv[0] = (int)(q * 255);
+            hsv[1] = (int)(v * 255);
+            hsv[2] = (int)(p * 255);
+            break;
+        case 2:
+            hsv[0] = (int)(p * 255);
+            hsv[1] = (int)(v * 255);
+            hsv[2] = (int)(t * 255);
+            break;
+        case 3:
+            hsv[0] = (int)(p * 255);
+            hsv[1] = (int)(q * 255);
+            hsv[2] = (int)(v * 255);
+            break;
+        case 4:
+            hsv[0] = (int)(t * 255);
+            hsv[1] = (int)(p * 255);
+            hsv[2] = (int)(v * 255);
+            break;
+        default:        // case 5:
+            hsv[0] = (int)(v * 255);
+            hsv[1] = (int)(p * 255);
+            hsv[2] = (int)(q * 255);
+            break;
+    }
 }
 
 
